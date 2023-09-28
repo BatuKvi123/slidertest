@@ -1,0 +1,150 @@
+local library = {}
+
+
+
+
+
+
+function library:CreateDingDong(text, minvalue, maxvalue, callback)
+	local LeSliderExampel = Instance.new("ScreenGui")
+	local TopFrame = Instance.new("Frame")
+	local Container = Instance.new("Frame")
+	TopFrame.Active = true
+	TopFrame.Selectable = true
+	TopFrame.Draggable = true
+
+
+	LeSliderExampel.Name = "LeSliderExampel"
+	LeSliderExampel.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	LeSliderExampel.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+	TopFrame.Name = "TopFrame"
+	TopFrame.Parent = LeSliderExampel
+	TopFrame.BackgroundColor3 = Color3.fromRGB(49, 49, 49)
+	TopFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TopFrame.BorderSizePixel = 0
+	TopFrame.Position = UDim2.new(0.313580245, 0, 0.214428857, 0)
+	TopFrame.Size = UDim2.new(0, 270, 0, 35)
+
+	Container.Name = "Container"
+	Container.Parent = TopFrame
+	Container.BackgroundColor3 = Color3.fromRGB(27, 27, 27)
+	Container.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Container.BorderSizePixel = 0
+	Container.Position = UDim2.new(0, 0, 1, 0)
+	Container.Size = UDim2.new(0, 270, 0, 73)
+	
+	
+	
+	
+	
+	
+	
+	text = text or "Ding Dong"
+	minvalue = minvalue or 0
+	maxvalue = maxvalue or 100
+	
+	local mouse = game.Players.LocalPlayer:GetMouse()
+	local uis = game:GetService("UserInputService")
+	local Value;
+	
+	
+	callback = callback or function() end
+	
+	local Slider = Instance.new("Frame")
+	--local UICorner = Instance.new("UICorner")
+	local SliderText = Instance.new("TextLabel")
+	local SliderButton = Instance.new("TextButton")
+	local SliderInner = Instance.new("Frame")
+	local TextLabel = Instance.new("TextLabel")
+	
+	Slider.Name = "Slider"
+	Slider.Parent = Container
+	Slider.BackgroundColor3 = Color3.fromRGB(49, 49, 49)
+	Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Slider.BorderSizePixel = 0
+	Slider.Position = UDim2.new(0.030382622, 0, 0.602739751, 0)
+	Slider.Size = UDim2.new(0, 252, 0, 22)
+
+	--UICorner.Parent = Slider
+
+	SliderText.Name = "SliderText"
+	SliderText.Parent = Slider
+	SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderText.BackgroundTransparency = 1.000
+	SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderText.BorderSizePixel = 0
+	SliderText.Position = UDim2.new(0.0321460336, 0, -1.40909088, 0)
+	SliderText.Size = UDim2.new(0, 3, 0, 25)
+	SliderText.Font = Enum.Font.Cartoon
+	SliderText.Text = text
+	SliderText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SliderText.TextSize = 20.000
+	SliderText.TextXAlignment = Enum.TextXAlignment.Left
+
+	SliderButton.Name = "SliderButton"
+	SliderButton.Parent = Slider
+	SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderButton.BackgroundTransparency = 1.000
+	SliderButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderButton.BorderSizePixel = 0
+	SliderButton.Size = UDim2.new(1, 0, 1, 0)
+	SliderButton.Font = Enum.Font.SourceSans
+	SliderButton.Text = " "
+	SliderButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+	SliderButton.TextSize = 14.000
+
+	SliderInner.Name = "SliderInner"
+	SliderInner.Parent = SliderButton
+	SliderInner.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+	SliderInner.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderInner.BorderSizePixel = 0
+	SliderInner.Size = UDim2.new(0, 0, 1, 0)
+
+	TextLabel.Parent = Slider
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.000
+	TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel.BorderSizePixel = 0
+	TextLabel.Position = UDim2.new(0.678571403, 0, -1.40909088, 0)
+	TextLabel.Size = UDim2.new(0, 81, 0, 25)
+	TextLabel.Font = Enum.Font.Cartoon
+	TextLabel.Text = "0"
+	TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.TextSize = 20.000
+	TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+	
+	
+	
+
+	SliderButton.MouseButton1Down:Connect(function()
+		Value = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 251) * SliderInner.AbsoluteSize.X) + tonumber(minvalue)) or 0
+		pcall(function()
+			callback(Value)
+		end)
+		SliderInner.Size = UDim2.new(0, math.clamp(mouse.X - SliderInner.AbsolutePosition.X, 0, 251), 0, 21)
+		moveconnection = mouse.Move:Connect(function()
+			TextLabel.Text = Value
+			Value = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 251) * SliderInner.AbsoluteSize.X) + tonumber(minvalue))
+			pcall(function()
+				callback(Value)
+				TextLabel.Text = Value
+			end)
+			SliderInner.Size = UDim2.new(0, math.clamp(mouse.X - SliderInner.AbsolutePosition.X, 0, 251), 0, 21)
+		end)
+		releaseconnection = uis.InputEnded:Connect(function(Mouse)
+			if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
+				Value = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 251) * SliderInner.AbsoluteSize.X) + tonumber(minvalue))
+				pcall(function()
+					callback(Value)
+				end)
+				SliderInner.Size = UDim2.new(0, math.clamp(mouse.X - SliderInner.AbsolutePosition.X, 0, 251), 0, 21)
+				moveconnection:Disconnect()
+				releaseconnection:Disconnect()
+			end
+		end)
+	end)
+	
+	
+	
+end
